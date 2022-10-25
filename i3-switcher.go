@@ -149,6 +149,9 @@ func moveLevelDown(moveContainer bool) error {
 		return nil
 	}
 	for i := i_focused + 1; i < len(workspaces); i++ {
+		if workspaces[i].Output != workspaces[i_focused].Output {
+			continue
+		}
 		if workspaces[i].Num/levelSize > workspaces[i_focused].Num/levelSize {
 			recordLevelSwitch(workspaces[i_focused].Num)
 			return moveToLevel(workspaces, workspaces[i].Num/levelSize, moveContainer)
@@ -167,6 +170,9 @@ func moveLevelUp(moveContainer bool) error {
 		return nil
 	}
 	for i := i_focused - 1; i >= 0; i-- {
+		if workspaces[i].Output != workspaces[i_focused].Output {
+			continue
+		}
 		if workspaces[i].Num/levelSize < workspaces[i_focused].Num/levelSize {
 			recordLevelSwitch(workspaces[i_focused].Num)
 			return moveToLevel(workspaces, workspaces[i].Num/levelSize, moveContainer)
@@ -203,8 +209,9 @@ type i3Workspace struct {
 	Name    string `json:"name"`
 	Visible bool   `json:"visible"`
 	Focused bool   `json:"focused"`
-	Output  string `json:"output"`
-	Urgent  bool   `json:"urgent"`
+	// Output is the name of display
+	Output string `json:"output"`
+	Urgent bool   `json:"urgent"`
 }
 
 func getWorkspaces() (workspaces []*i3Workspace, err error) {
